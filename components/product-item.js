@@ -95,11 +95,11 @@ class ProductItem extends HTMLElement {
 
     let price = document.createElement('p');
     price.setAttribute('class', "price");
-    price.textContent = obj["price"];
+    price.textContent = "$" + obj["price"];
 
     let btn = document.createElement('button');
-    btn.setAttribute('onclick', `alert('Added to Cart!')`);
-    btn.textContent = "Add to cart";
+    // btn.setAttribute('onclick', `addToCart(` + String(obj["id"]) + `)`);
+    // btn.textContent = "Add to cart";
     shadow.appendChild(wrapper);
     wrapper.appendChild(img);
     wrapper.appendChild(title);
@@ -107,62 +107,46 @@ class ProductItem extends HTMLElement {
     wrapper.appendChild(btn);
     // console.log(shadow);
   }
-  
+  // When the cart change, change the add/remove button
   attributeChangedCallback(attrName, oldVal, newVal) {
     // console.log("Enter Here");
     // console.log(newVal);
     // console.log(JSON.parse(newVal));
     // console.log(newVal["image"]);
-    
+    // console.log("Here");
+    // console.log(newVal);
     let shadow = this.shadowRoot;
-    let wrapper = document.createElement('li');
-    wrapper.setAttribute('class', 'product');
-
-    let obj = JSON.parse(newVal);
-    // console.log(this.outerHTML);
-    // console.log(obj);
-    // console.log(obj["image"]);
-    let img = document.createElement('img');
-    img.setAttribute('src', obj["image"]);
-    img.setAttribute('alt', obj["title"]);
-    img.setAttribute('width', 200);
-
-    let title = document.createElement('p');
-    title.setAttribute('class', "title");
-    title.textContent = obj["title"];
-
-    let price = document.createElement('p');
-    price.setAttribute('class', "price");
-    title.textContent = obj["price"];
-
-    let btn = document.createElement('button');
-    btn.setAttribute('onclick', `addToCart(` + str(obj["id"]) + `)`);
-    btn.textContent = "Add to cart";
-    shadow.appendChild(wrapper);
-    wrapper.appendChild(img);
-    wrapper.appendChild(title);
-    wrapper.appendChild(price);
-    wrapper.appendChild(btn);
-    console.log(shadow);
+    let btn = shadow.querySelector('button');
+    // console.log(btn);
+    if (newVal == 0) {
+      btn.setAttribute('onclick', `addToCart(` + this.id + `)`);
+      btn.textContent = "Add to Cart";
+    } else {
+      btn.setAttribute('onclick', `removeFromCart(` + this.id + `)`);
+      btn.textContent = "Remove from Cart";
+    }
   }
 
-  // static get observedAttributes() {
-  //     return ['item'];
-  // }
+  static get observedAttributes() {
+      return ['cart'];
+  }
   
-  // get item() {
-  //   return this.getAttribute('item');
-  // }
+  get cart() {
+    return this.getAttribute('cart');
+  }
 
-  // set item(newObj) {
-  //   // console.log("Setting");
-  //   // console.log(newObj);
-  //   // console.log(JSON.stringify(newObj));
-  //   this.setAttribute('item', newObj);
-  // }
+  set cart(newVal) {
+    this.setAttribute('cart', newVal);
+  }
+
+  get id() {
+    var productID = this.getAttribute('id');
+    // console.log(productID.split('-')[1]);
+    return productID.split('-')[1];
+  }
   
-  // connectedCallback() {
-  // }
+  connectedCallback() {
+  }
 }
 
 customElements.define('product-item', ProductItem);
